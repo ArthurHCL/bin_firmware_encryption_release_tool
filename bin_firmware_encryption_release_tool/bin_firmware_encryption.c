@@ -63,7 +63,6 @@ static RELEASED_FIRMWARE_BIN_FILE_HEADER    released_firmware_bin_file_header = 
 int bin_firmware_encryption(void)
 {
 	int            i;
-	int            keyboard_input;
 	time_t         original_time;
 	struct tm     *translated_time;
 	const char    *original_firmware_bin_file_name;
