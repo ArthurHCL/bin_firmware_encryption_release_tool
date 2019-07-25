@@ -58,10 +58,9 @@ static RELEASED_FIRMWARE_BIN_FILE_HEADER    released_firmware_bin_file_header = 
 	.firmware_crc32  = 0
 };
 
-int bin_firmware_encryption(void)
+int main(void)
 {
 	int            i;
-	int            keyboard_input;
 	time_t         original_time;
 	struct tm     *translated_time;
 	const char    *original_firmware_bin_file_name;
@@ -74,39 +73,8 @@ int bin_firmware_encryption(void)
 	unsigned char  data_buf[AES_BLOCKLEN];
 
 	/* select bin firmware to be encrypted for release. */
-	while (1) {
-		(void)printf("\nenter target bin firmware to be encrypted for release:\n");
-		(void)printf("    0: Receiver\n");
-		(void)printf("    1: Waist Sensor\n");
-		(void)printf("    2: Leftfoot Sensor\n");
-		(void)printf("    3: Rightfoot Sensor\n");
-		scanf_s("%d", &keyboard_input);
-		if ((0 > keyboard_input) || (3 < keyboard_input)) {
-			(void)printf("    invalid selection!\n");
-		} else {
-			break;
-		}
-	}
-	switch (keyboard_input) {
-	case 0:
-		original_firmware_bin_file_name = ORIGINAL_FIRMWARE_BIN_FILE_NAME_RECEIVER;
-		released_firmware_bin_file_name = RELEASED_FIRMWARE_BIN_FILE_NAME_RECEIVER;
-		break;
-	case 1:
-		original_firmware_bin_file_name = ORIGINAL_FIRMWARE_BIN_FILE_NAME_WAIST;
-		released_firmware_bin_file_name = RELEASED_FIRMWARE_BIN_FILE_NAME_WAIST;
-		break;
-	case 2:
-		original_firmware_bin_file_name = ORIGINAL_FIRMWARE_BIN_FILE_NAME_LEFTFOOT;
-		released_firmware_bin_file_name = RELEASED_FIRMWARE_BIN_FILE_NAME_LEFTFOOT;
-		break;
-	case 3:
-		original_firmware_bin_file_name = ORIGINAL_FIRMWARE_BIN_FILE_NAME_RIGHTFOOT;
-		released_firmware_bin_file_name = RELEASED_FIRMWARE_BIN_FILE_NAME_RIGHTFOOT;
-		break;
-	default:
-		return -1;
-	}
+	original_firmware_bin_file_name = ORIGINAL_FIRMWARE_BIN_FILE_NAME;
+	released_firmware_bin_file_name = RELEASED_FIRMWARE_BIN_FILE_NAME;
 
 	/* get original time. */
 	original_time = time(NULL);
@@ -116,7 +84,7 @@ int bin_firmware_encryption(void)
 		return -1;
 	}
 	/* get translated time. */
-	(void)localtime_s(&translated_time, &original_time);
+	translated_time = localtime(&original_time);
 	/* update global time. */
 	released_firmware_bin_file_header.release_year   = translated_time->tm_year + 1900;
 	released_firmware_bin_file_header.release_month  = translated_time->tm_mon + 1;
@@ -125,16 +93,18 @@ int bin_firmware_encryption(void)
 	released_firmware_bin_file_header.release_minute = translated_time->tm_min;
 
 	/* open bin file of original firmware. */
-	if (fopen_s(&original_firmware_bin_file, original_firmware_bin_file_name, "r")) {
-		(void)printf("fopen_s() of original bin file: %s\n", original_firmware_bin_file_name);
+	original_firmware_bin_file = fopen(original_firmware_bin_file_name, "r");
+	if (NULL == original_firmware_bin_file) {
+		(void)printf("fopen() of original bin file: %s\n", original_firmware_bin_file_name);
 		perror("    ");
 
 		return -1;
 	}
 
 	/* open bin file of released firmware. */
-	if (fopen_s(&released_firmware_bin_file, released_firmware_bin_file_name, "w")) {
-		perror("fopen_s() of released bin file");
+	released_firmware_bin_file = fopen(released_firmware_bin_file_name, "w");
+	if (NULL == released_firmware_bin_file) {
+		perror("fopen() of released bin file");
 
 		return -1;
 	}

@@ -1,10 +1,6 @@
 #ifndef _CONFIG_H_
 #define _CONFIG_H_
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 
 
 /* our embeded engineers should control the bin file version of released firmware. */
@@ -26,7 +22,6 @@ extern "C" {
 #define ORIGINAL_FIRMWARE_BIN_FILE_NAME     "user_application.bin"
 
 #define RELEASED_FIRMWARE_BIN_FILE_NAME     "user_application_release_by_embeded_engineer.bin"
-
 
 
 
@@ -80,9 +75,5 @@ typedef struct {
 } RELEASED_FIRMWARE_BIN_FILE_HEADER;
 
 
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif

@@ -1,10 +1,6 @@
 #ifndef _AES_H_
 #define _AES_H_
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 
 
 #include <stdint.h>
@@ -108,8 +104,5 @@ void AES_CTR_xcrypt_buffer(struct AES_ctx *ctx, uint8_t *buf, uint32_t length);
 
 
 
-#ifdef __cplusplus
-}
 #endif
 
-#endif
