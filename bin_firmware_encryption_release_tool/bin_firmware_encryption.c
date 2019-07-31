@@ -74,6 +74,10 @@ int bin_firmware_encryption(void)
 	bool           is_original_firmware_bin_file_read_complete = false;
 	unsigned char  data_buf[AES_BLOCKLEN];
 
+	/* the code is required if it is modified by another programmer and called in a loop. */
+	released_firmware_bin_file_header.firmware_length = 0;
+	released_firmware_bin_file_header.firmware_crc32  = 0;
+
 	/* select bin firmware to be encrypted for release. */
 	original_firmware_bin_file_name = ORIGINAL_FIRMWARE_BIN_FILE_NAME;
 	released_firmware_bin_file_name = RELEASED_FIRMWARE_BIN_FILE_NAME;
